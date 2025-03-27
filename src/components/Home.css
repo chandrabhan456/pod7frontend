@@ -1,0 +1,215 @@
+/* Main container styling */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+.config-heading {
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  color: white;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Upload container */
+.upload-container {
+  max-width: 100rem;
+  margin: 0 auto;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  height: 40rem;
+  padding: 1rem;
+}
+
+/* Upload sections */
+.upload-section {
+  background: white;
+  border-radius: 16px;
+  margin-top: 4.5%;
+  margin-left: 3%;
+  padding: 1rem;
+  height: auto;
+  flex-grow: 1;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative; /* Ensure absolute child positioning works */
+}
+
+.upload-section1 {
+  background: #1e3a8a;
+  border-radius: 6px;
+  padding: 0.2rem;
+  text-align: center;
+  color: white;
+}
+
+/* Step indicator alignment */
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+ul li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+ul li .flex-col {
+  align-items: center;
+}
+
+/* Vertical stepper line */
+ul li:not(:last-child)::after {
+  content: '';
+  width: 2px;
+  height: 40px; /* Adjust based on spacing */
+  background: #ccc;
+  position: absolute;
+  left: 19px; /* Align with icons */
+  top: 40px;
+}
+
+/* Radio button container */
+.radio-container {
+  display: flex;
+  margin-top: 4%;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: start;
+  padding-left: 2rem;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+  transform: scale(1.7); /* Less extreme scaling */
+}
+
+.radio-option span {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+/* Next Button Fix */
+.next-btn {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  background: #578FCA;
+
+
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.nextdisable-btn {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  background: white;
+
+
+  color: black;
+  border: 1px solid black;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.previous-btn {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 10rem;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  background: white;
+
+
+  color: black;
+  border: 1px solid black;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+/* Next Button Fix */
+.discard-btn {
+  position: absolute;
+ 
+  right: 4rem;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  background: #578FCA;
+
+
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.next-btn:hover {
+  background-color: #0c2b5f;
+}
+
+input {
+  width: 60%;
+  padding: 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}@keyframes borderChange {
+  0% {
+    border-top-color: black;
+    border-right-color: black;
+    border-bottom-color: black;
+    border-left-color: black;
+  }
+  25% {
+    border-top-color: green;
+    border-right-color: black;
+    border-bottom-color: black;
+    border-left-color: black;
+  }
+  50% {
+    border-top-color: green;
+    border-right-color: green;
+    border-bottom-color: black;
+    border-left-color: black;
+  }
+  75% {
+    border-top-color: green;
+    border-right-color: green;
+    border-bottom-color: green;
+    border-left-color: black;
+  }
+  100% {
+    border-top-color: green;
+    border-right-color: green;
+    border-bottom-color: green;
+    border-left-color: green;
+  }
+}
+
+.animate-borderChange {
+  animation: borderChange 4s infinite; /* Animation duration of 4 seconds and infinite loop */
+}
+
+
+
