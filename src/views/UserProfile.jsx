@@ -6,7 +6,7 @@ import { CgProfile } from "react-icons/cg";
 import { useNavigate } from 'react-router-dom';
 
 const UserProfile = () => {
-  const { login1, setlogin1, currentMode, handleClick,setIsClicked, initialState } = useStateContext();
+  const { sidebarCurrentStep,setSidebarCurrentStep, login1, setlogin1, currentMode, handleClick,setIsClicked, initialState } = useStateContext();
   const navigate = useNavigate();
 
   // State to track if the user profile is open or closed
@@ -20,6 +20,7 @@ const UserProfile = () => {
     handleClick(initialState);
     setlogin1(false);
     localStorage.clear();
+    setSidebarCurrentStep(0)
     navigate('/');
   }
 
@@ -50,12 +51,12 @@ const UserProfile = () => {
     isOpen && (
       <div
         ref={profileRef}
-        className={`nav-item absolute right top-10 dark:bg-black bg-[#f8f9fa] p-4 rounded-lg w-48 ml-12 border border-gray-300 dark:border-[#4f4f4f] ${currentMode === 'Dark' ? 'dark' : ''}`}
-        
+        className={`  relative right-32 top-10 dark:bg-black bg-[#f8f9fa] p-2 rounded-lg w-48 h-20 border border-gray-800 dark:border-[#4f4f4f] ${currentMode === 'Dark' ? 'dark' : ''}` }
+       
       >
         <div className="flex">
           <CgProfile className="text-black dark:text-white text-xl mt-1" />
-          <p className="text-xl dark:text-white text-[#353839] ml-2">User Profile</p>
+          <p className="text-xl dark:text-white text-[#353839] ml-2 whitespace-nowrap">User Profile</p>
         </div>
         <div className="mt-1 flex">
           <AiOutlineLogout className="dark:text-white text-black text-xl mt-1" />

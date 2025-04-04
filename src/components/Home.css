@@ -12,37 +12,64 @@
   margin-bottom: 1rem;
 }
 
-/* Upload container */
-.upload-container {
-  max-width: 100rem;
-  margin: 0 auto;
+/* Upload container */.upload-container {
+  width: 100% !important; /* Ensures it always takes full width */
+  max-width: none; /* Removes any max-width restriction */
+  margin: 0; /* Ensures it doesn't center itself */
   background: white;
   border-radius: 20px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  height: 40rem;
+  height: fit-content;
   padding: 1rem;
 }
+
 
 /* Upload sections */
 .upload-section {
   background: white;
   border-radius: 16px;
   margin-top: 4.5%;
-  margin-left: 3%;
+  margin-left: 1%;
   padding: 1rem;
-  height: auto;
+  height: 25rem;
   flex-grow: 1;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative; /* Ensure absolute child positioning works */
 }
+.upload-sections-wrapper {
+  display: flex;
+  flex-wrap: wrap; /* Allow sections to wrap */
+  gap: 1rem;
+  justify-content: space-between; /* Space sections equally */
+  width: 100%; /* Ensure wrapper takes full width */
+}
+
+.upload-sectionp {
+  width: 30%; /* Set width as a percentage */
+  min-width: 250px; /* Ensure sections are not too small */
+}
+
+/* Adjust section wrapping at 125% zoom */
+@media (max-width: 80%) {
+  .upload-section {
+    width: 45%; /* When zoom is 125%, set the section width to 45% */
+  }
+}
+
+@media (max-width: 60%) {
+  .upload-section {
+    width: 100%; /* Full width at even smaller sizes */
+  }
+}
 
 .upload-section1 {
   background: #1e3a8a;
   border-radius: 6px;
-  padding: 0.2rem;
+  padding: 0.1rem;
   text-align: center;
   color: white;
+  
 }
 
 /* Step indicator alignment */
@@ -103,7 +130,7 @@ ul li:not(:last-child)::after {
 .next-btn {
   position: absolute;
   bottom: 1.5rem;
-  right: 1.5rem;
+  right: .5rem;
   padding: 0.8rem 2rem;
   font-size: 1rem;
   background: #578FCA;
@@ -118,7 +145,7 @@ ul li:not(:last-child)::after {
 .nextdisable-btn {
   position: absolute;
   bottom: 1.5rem;
-  right: 1.5rem;
+  right: .5rem;
   padding: 0.8rem 2rem;
   font-size: 1rem;
   background: white;
@@ -154,7 +181,7 @@ ul li:not(:last-child)::after {
   padding: 0.8rem 2rem;
   font-size: 1rem;
   background: #578FCA;
-
+  z-index: 10;
 
   color: white;
   border: none;
@@ -176,28 +203,28 @@ input {
   transition: border-color 0.3s;
 }@keyframes borderChange {
   0% {
-    border-top-color: black;
-    border-right-color: black;
-    border-bottom-color: black;
-    border-left-color: black;
+    border-top-color: #DEDEDE;
+    border-right-color: #DEDEDE;
+    border-bottom-color: #DEDEDE;
+    border-left-color: #DEDEDE;
   }
   25% {
     border-top-color: green;
-    border-right-color: black;
-    border-bottom-color: black;
-    border-left-color: black;
+    border-right-color: #DEDEDE;
+    border-bottom-color: #DEDEDE;
+    border-left-color: #DEDEDE;
   }
   50% {
     border-top-color: green;
     border-right-color: green;
-    border-bottom-color: black;
-    border-left-color: black;
+    border-bottom-color: #DEDEDE;
+    border-left-color: #DEDEDE;
   }
   75% {
     border-top-color: green;
     border-right-color: green;
     border-bottom-color: green;
-    border-left-color: black;
+    border-left-color: #DEDEDE;
   }
   100% {
     border-top-color: green;

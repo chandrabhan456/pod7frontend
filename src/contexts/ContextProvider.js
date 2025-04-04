@@ -29,10 +29,27 @@ export const ContextProvider = ({ children }) => {
   const [themeSettings, setThemeSettings] = useState(false);
   const [mainPage, setMainPage] = useState(false)
   const [login1, setlogin1] = useState(initialLoginState);
+  const [sidebarCurrentStep,setSidebarCurrentStep] = useState(0)
   useEffect(() => {
     localStorage.setItem('login', login1);
   }, [login1]);
- 
+    const [formDataOpenAI, setFormDataOpenAI] = useState({
+      endpoint: "",
+      key: "",
+      deploymentModel: "",
+      apiVersion: "",
+    });
+    const [formDataDI, setFormDataDI] = useState({
+      endpoint: "",
+      key: "",
+      deploymentModel: "",
+     
+    });
+    const [formDataStorage, setFormDataStorage] = useState({
+      endpoint: "",
+      key: "",
+    
+    });
   const [home,setHome] = useState(true)
   const [playgrond,setPlaygrond] = useState(false)
   const [vertorDB,setVectorDB] = useState(false)
@@ -44,7 +61,7 @@ export const ContextProvider = ({ children }) => {
 
   return (
     // eslint-disable-next-line react/jsx-no-constructed-context-values
-    <StateContext.Provider value={{currentMode, setCurrentMode,vertorDB,setVectorDB, playgrond,setPlaygrond,home,setHome,login1,setlogin1,mainPage,setMainPage,activeMenu,setActiveMenu,handleClick,setIsClicked,isClicked,initialState,setCurrentColor}}>
+    <StateContext.Provider value={{sidebarCurrentStep,setSidebarCurrentStep,formDataStorage, setFormDataStorage,formDataDI, setFormDataDI,formDataOpenAI, setFormDataOpenAI,currentMode, setCurrentMode,vertorDB,setVectorDB, playgrond,setPlaygrond,home,setHome,login1,setlogin1,mainPage,setMainPage,activeMenu,setActiveMenu,handleClick,setIsClicked,isClicked,initialState,setCurrentColor}}>
       {children}
     </StateContext.Provider>
   );

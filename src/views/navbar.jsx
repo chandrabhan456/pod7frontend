@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import { MdKeyboardArrowUp } from "react-icons/md";
-import avatar from '../data/avatar.jpg';
+import avatar from '../data/user-profile2.png';
 import { Link, NavLink, useNavigate,Navigate } from 'react-router-dom';
 import { FiSettings } from 'react-icons/fi';
 import { Setting, OpenAI,UserProfile} from '.';
@@ -63,43 +63,21 @@ const Navbar = () => {
     </div>
     
 
-      <div className='absolute inline-flex rounded-full h-2 w-2 right-60 top-1.5' > 
-     {(activeMenu) &&
-      <NavButton title="Chat" customFunc={() => handleClick('setting')}
-    
-      color={ currentMode == 'Light'  ? 'black' : 'white'}  icon={<FiSettings />} />}
-      {!(activeMenu) &&  <NavButton title="Chat" customFunc={() => {setMainPage(true);setActiveMenu(true)}}
-    
-    color={ currentMode === 'Light'  ? 'black' : 'white'}  icon={<IoHomeOutline />} />}
-    {(currentMode === 'Light') && <NavButton title="Notification" customFunc={() => setCurrentMode("Dark")}
-      
-     color={ currentMode === 'Light'  ? 'black' : 'white'}  icon={<MdOutlineWbSunny />} />}
-       {(currentMode === 'Dark') && <NavButton title="Notification" customFunc={() => setCurrentMode("Light")}
-      
-      color={ currentMode === 'Light'  ? 'black' : 'white'}  icon={<LuSunMoon />} />}
-        
-          <div
-             className="img items-center mt-4 ml-3  "
-             onClick={() => handleClick('userProfile')}
-             style={{cursor:'pointer'}}
-          >
+      <div className='absolute inline-flex rounded-full h-2 w-48 right-56 top-1.5' > 
+     <div className='text-2xl text-gray-800'>Deployment</div>
+     <div className='text-2xl  ml-4 text-gray-800'>Documentation</div>
+     <div 
+  className="flex items-center justify-center mt-5  cursor-pointer" 
+  onClick={() => handleClick('userProfile')}
+> 
+  <img
+    className="rounded-full ml-10 w-full h-10 border border-gray-300 shadow-md"
 
-            <img
-              className="img rounded-full w-8 h-8 mt-2 "
-              src={avatar}
-              alt="user-profile"
-            />
-            <p className='whitespace-nowrap flex mt-2'>
-              <span className="text-black-400 text-14 text-black dark:text-white"  >Hi,</span>{' '}
-              <span className="flex text-black-400 font-bold ml-1 text-14 text-black dark:text-white"  >
-                Michael
-              {!(isClicked.userProfile) &&  <MdKeyboardArrowDown className="dark:text-white text-black text-14 mt-1" />}
-              {(isClicked.userProfile) &&  <MdKeyboardArrowUp className="dark:text-white text-black text-14 mt-1" onClick={() => handleClick('userProfile')}/>}
-             
-              </span>
-            </p>
-          
-          </div>
+    src={avatar}
+    alt="user-profile"
+  />
+</div>
+
           {mainPage && <Navigate replace={true} to='/' />}
            {/* {isClicked.setting && <Setting /> }  */}
            {isClicked.userProfile && (<UserProfile />)}
