@@ -238,5 +238,103 @@ input {
   animation: borderChange 4s infinite; /* Animation duration of 4 seconds and infinite loop */
 }
 
+/* Styling for the container of the checkboxes */
+.container-selector {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}ul.custom-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
+li::after {
+  content: none !important;
+  display: none !important;
+}
 
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #3b82f6; /* Blue color */
+  animation: blink 1.4s infinite both;
+}
+
+.dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%,
+  50%,
+  100% {
+    opacity: 0;
+  }
+  25%,
+  75% {
+    opacity: 1;
+  }
+}.document-display {
+  padding: 0px;
+  text-align: left; /* Align the entire content to the left */
+}
+
+.container {
+  margin-bottom: 20px;
+}
+
+.folder {
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.folder-header {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.folder-icon {
+  margin-right: 8px;
+}
+
+.documents {
+  margin-left: 20px;
+}
+
+.document label {
+  display: inline-flex;  /* Make sure content inside label stays in a row */
+  align-items: center;
+  margin-bottom: 8px;
+  text-align: left;  /* Ensure label text is left-aligned */
+}
+
+.document input[type="radio"] {
+  margin-left: 0; /* Ensure the radio button is at the left */
+  margin-right: 10px; /* Space between radio button and document name */
+  
+}
+
+.container h3 {
+  margin-left: 20px; /* Left-align container name */
+}
+
+.document {
+  margin-left: 20px; /* Left-align document item */
+}

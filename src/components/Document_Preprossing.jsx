@@ -7,13 +7,13 @@ import { MdCancel } from "react-icons/md";
 import { Link, NavLink } from "react-router-dom";
 
 const steps = [
-  "Select Storage Container",
-  
-  "Select Documents",
+  "Text Data Processing",
+  "Confirm",
+  "Select Tables Extraction Method",
   "Confirm",
 ];
 
-const Data_Load = () => {
+ const Document_Preprossing = () => {
   const {
     setSidebarCurrentStep,
     formDataStorage,
@@ -293,12 +293,12 @@ const Data_Load = () => {
           </button>
         </div>
         <div className="upload-sections-wrapper" style={{ marginTop: "-4%" }}>
-          <div className="upload-section ">
+          <div className="upload-section " style={{height:'30rem'}}>
             <h2
               className=" upload-section1 config-heading text-center whitespace-nowrap"
               style={{ width: "100%", marginTop: "-4%" }}
             >
-              Data Load
+              Document-Preprossesing
             </h2>
             <ul className="relative ml-5 mt-10">
           
@@ -407,7 +407,7 @@ const Data_Load = () => {
               ))}
             </ul>
           </div>
-          <div className="upload-section" style={{ width: "60%" }}>
+          <div className="upload-section" style={{ width: "60%",height:'30rem' }}>
             <h2
               className=" upload-section1 config-heading text-center "
               style={{ width: "100%", marginTop: "-1.7%" }}
@@ -415,149 +415,101 @@ const Data_Load = () => {
               {" "}
               {steps[currentStep]}
             </h2>
-            {currentStep === 0 && (
-              <div className=" ml-5 mt-10 ">
-                  {isLoading && (
-      <div className="loading-container mt-10">
-  <span className="dot"></span>
-  <span className="dot ml-2"></span>
-  <span className="dot ml-2"></span>
-</div>
-      )}
-             <ul className="list-none p-0 m-0 space-y-2">
-  {containers.map((container, index) => (
-    <li key={index}>
-     <label className="flex items-center gap-4 text-3xl font-medium text-[#333] dark:text-[#D3D3D3]">
-  <input
-    type="checkbox"
-    className="w-6 h-6 accent-blue-600 cursor-pointer"  // Bigger checkbox
-    value={container}
-    onChange={handleCheckboxChange}
-    checked={selectedContainers.includes(container)}
-  />
-  <span className="text-2xl text-black">{container}</span>  {/* Bigger text */}
-</label>
+           {currentStep === 0 &&  
+           <form className=" w-full mt-10 flex flex-wrap ">
 
-      
-    </li>
-  ))}
-</ul>
-
-              </div>
-            )}
-
-{currentStep === 1 && (
-              <div className=" ml-5 mt-10 ">
-                  {isLoading && (
-      <div className="loading-container mt-10">
-  <span className="dot"></span>
-  <span className="dot ml-2"></span>
-  <span className="dot ml-2"></span>
-</div>
-      )}
-           {!isLoading &&
-           <div className="document-display flex flex-col gap-0 p-0 m-0 leading-none">
-
-            {Object.entries(structuredDocuments).map(([containerName, container]) => (
-              <div key={containerName} className="p-0 m-0 ">
-
-
-    {/* Render folders first */}
-    {Object.entries(container)
-      .filter(([folderName]) => folderName !== "nofolder")
-      .map(([folderName, folder]) => (
-        <div key={folderName} className="folder text-xl p-0 m-0">
-          <div className="folder-header">
-            <i className="folder-icon">📁</i>
-            <span>{folderName}</span>
+           {/* Parameter 1 */}
+           <div className="flex w-full sm:w-[calc(50%-0.5rem)] flex-col sm:flex-row gap-2 p-4">
+             <label className="w-1/3 text-base font-medium whitespace-nowrap">Section Pattern</label>
+             <div className="flex flex-col w-full gap-2">
+             <div className="relative">
+            <input
+              type="text"
+              placeholder=""
+              className=" w-full h-12 text-lg bg-slate-100 border border-gray-300 p-2 rounded-lg pr-24"
+            />
+            <button
+              type="button"
+              className="absolute top-1/2 right-2 -translate-y-1/2 bg-blue-500 text-white text-sm px-3 py-1 rounded-lg hover:bg-blue-700"
+            >
+              Generate
+            </button>
           </div>
-
-          <div className="documents">
-            {folder.documents.map((document, index) => (
-              <div key={index} className="document whitespace-nowrap text-lg p-0 m-0">
-                <label>
-                  <input
-                    type="radio"
-                    name={`${containerName}-${folderName}-${document}`}
-                    value={document}
-                    checked={selectedDocument === document}
-                    onChange={handleDocumentChange}
-                  />
-                  {document}
-                </label>
-              </div>
-            ))}
+          <input
+            type="text"
+            placeholder=""
+            className=" w-full h-12 text-lg bg-slate-100 border border-gray-300 p-2 rounded-lg"
+          />
+        </div>
+        
+             </div>
+           
+     
+           {/* Parameter 2 */}
+           <div className="flex w-full sm:w-[calc(50%-0.5rem)] flex-col sm:flex-row gap-2 p-4">
+             <label className="w-1/3 text-base font-medium whitespace-nowrap">Subsection</label>
+             <div className="flex flex-col w-[130%] gap-2">
+             <div className="relative">
+            <input
+              type="text"
+              placeholder=""
+              className=" w-full h-12 text-lg bg-slate-100 border border-gray-300 p-2 rounded-lg pr-24"
+            />
+            <button
+              type="button"
+              className="absolute top-1/2 right-2 -translate-y-1/2 bg-blue-500 text-white text-sm px-3 py-1 rounded-lg hover:bg-blue-700"
+            >
+              Generate
+            </button>
           </div>
-        </div>
-      ))}
-
-    {/* Then render nofolder section if present */}
-    {container.nofolder && (
-      <div className="folder p-0 m-0">
-        <div className="documents p-0 m-0">
-          {container.nofolder.documents.map((document, index) => (
-            <div key={index} className="document whitespace-nowrap text-lg m-0 p-0 last:mb-0 leading-none">
-              <label className="flex items-center gap-2 m-0 p-0">
-                <input
-                  type="radio"
-                  name={`${containerName}-nofolder-${document}`}
-                  value={document}
-                  checked={selectedDocument === document}
-                  onChange={handleDocumentChange}
-                />
-                {document}
-              </label>
-            </div>
-          ))}
-        </div>
-      </div>
-    )}
-  </div>
-))}
-
+          <input
+            type="text"
+            placeholder=""
+            className=" w-full h-12 text-lg bg-slate-100 border border-gray-300 p-2 rounded-lg"
+          />
+             </div>
            </div>
      
-       }
+           {/* Parameter 3 */}
+           <div className="flex w-full sm:w-[calc(50%-0.5rem)] flex-col sm:flex-row gap-2 p-4">
+             <label className="w-1/3 text-base font-medium whitespace-nowrap">Bullet Pattern</label>
+             <div className="flex flex-col  ml-2 w-full gap-2">
+             <div className="relative">
+            <input
+              type="text"
+              placeholder=""
+              className=" w-full h-12 text-lg bg-slate-100 border border-gray-300 p-2 rounded-lg pr-24"
+            />
+            <button
+              type="button"
+              className="absolute top-1/2 right-2 -translate-y-1/2 bg-blue-500 text-white text-sm px-3 py-1 rounded-lg hover:bg-blue-700"
+            >
+              Generate
+            </button>
+          </div>
+          <input
+            type="text"
+            placeholder=""
+            className=" w-full h-12 text-lg bg-slate-100 border border-gray-300 p-2 rounded-lg"
+          />
+             </div>
+           </div>
+     
+         </form>
+  }
 
-              </div>
-            )}
-            {currentStep === 2 && (
-              <div className=" ml-5 mt-10 ">
-                  {isLoading && (
-      <div className="loading-container mt-10">
-  <span className="dot"></span>
-  <span className="dot ml-2"></span>
-  <span className="dot ml-2"></span>
-</div>
-      )}
-           {!isLoading && (
-   <div className="mt-2 text-base">
-    {console.log("url",downloadedDocument.url)}
-   {downloadedDocument.name}
-   <span
-     onClick={() => window.open(downloadedDocument.url, "_blank")}
-     className="text-blue-600 hover:underline ml-2 cursor-pointer"
-   >
-     View File
-   </span>
- </div>
-      )}
-       
-
-              </div>
-            )}
+          
             {/* Next Button at the Bottom Right */}
             <div className="flex justify-between items-center w-full mt-4">
               {/*<button className="previous-btn w-32" onClick={handlePrevious}>
                 Previous
               </button>*/}
-              {successKey && currentStep !== 2 && (
+              {successKey && currentStep !== 3 && (
                 <button className="next-btn w-32 " onClick={handleNext}>
                   Next
                 </button>
               )}
-             
-              { currentStep === 2 && (
+              { currentStep == 2 && (
                 <NavLink
                   onClick={() => {
                     setSidebarCurrentStep(2);
@@ -568,7 +520,7 @@ const Data_Load = () => {
                   <button className="next-btn w-32 ">Next</button>
                 </NavLink>
               )}
-              {(!successKey&& currentStep!==2) && (
+              {!successKey && (
                 <button className="nextdisable-btn w-32 ">Next</button>
               )}
             </div>
@@ -580,4 +532,4 @@ const Data_Load = () => {
   );
 };
 
-export default Data_Load;
+export default Document_Preprossing

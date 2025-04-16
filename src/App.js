@@ -3,7 +3,7 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navbar,  Sidebar} from './views';
 import { useStateContext } from './contexts/ContextProvider';
-import {Data_Load,Home } from './components'
+import {Data_Load,Home,Docparser } from './components'
 import nttlogo from './data/nttdatalogo.svg';
 import Login from "./views/Login";
 const App = () => {
@@ -47,6 +47,7 @@ const App = () => {
              <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} /> 
             <Route path="/data_load" element={<Data_Load />} /> 
+            <Route path="/document_preprossesing" element={<Docparser />} /> 
           </Routes>
         </div>
       </div>

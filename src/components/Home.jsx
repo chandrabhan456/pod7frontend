@@ -1,10 +1,10 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./Home.css";
 import { useStateContext } from "../contexts/ContextProvider";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { FaRegCircle, FaCheckCircle } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink } from "react-router-dom";
 import azureimg from "../data/azure.jpg";
 import amazonimg from "../data/amazon.png";
 import gcpimg from "../data/gcp.jpg";
@@ -15,17 +15,25 @@ const steps = [
   "Storage Account",
 ];
 const Home = () => {
-  const {setSidebarCurrentStep,formDataStorage, setFormDataStorage,formDataDI, setFormDataDI,formDataOpenAI, setFormDataOpenAI} = useStateContext();
+  const {
+    setSidebarCurrentStep,
+    formDataStorage,
+    setFormDataStorage,
+    formDataDI,
+    setFormDataDI,
+    formDataOpenAI,
+    setFormDataOpenAI,
+  } = useStateContext();
   const [currentStep, setCurrentStep] = useState(0);
   const [successKey, setSuccesskey] = useState(false);
-  const [selectedService,setSelectedService]=useState("")
+  const [selectedService, setSelectedService] = useState("");
   const [formData, setFormData] = useState({
     endpoint: "",
     key: "",
     deploymentModel: "",
     apiVersion: "",
   });
- const [validity, setValidity] = useState({
+  const [validity, setValidity] = useState({
     endpoint: false,
     key: false,
     deploymentModel: false,
@@ -43,16 +51,16 @@ const Home = () => {
     deploymentModel: "",
     apiVersion: "",
   });
-  const [prevFormData, setPrevFormData] = useState(formData); 
+  const [prevFormData, setPrevFormData] = useState(formData);
   const validate = (name, value) => {
     if (!value.trim()) {
       return `${name} is required`;
     }
-    if ( name==='endpoint') {
+    if (name === "endpoint") {
       return `${name} is not valid `;
     }
-    if (name==='key' ) {
-      return 'key or Endpoint is not valid ';
+    if (name === "key") {
+      return "key or Endpoint is not valid ";
     }
     return "";
   };
@@ -69,7 +77,8 @@ const Home = () => {
     const connectionString = `DefaultEndpointsProtocol=https;AccountName=${accountName};AccountKey=${key};EndpointSuffix=core.windows.net`;
 
     return connectionString;
-  }; const handleChange = async (e) => {
+  };
+  const handleChange = async (e) => {
     const { name, value } = e.target;
 
     // Update formData when an input field changes
@@ -82,28 +91,27 @@ const Home = () => {
   // useEffect to trigger whenever formData changes
   useEffect(() => {
     // Only call handleFormDataChange if formData has changed
-    console.log("precformdata",prevFormData)
-    if ((JSON.stringify(prevFormData) !== JSON.stringify(formData))) {
-      
+    console.log("precformdata", prevFormData);
+    if (JSON.stringify(prevFormData) !== JSON.stringify(formData)) {
       handleFormDataChange(formData);
       setPrevFormData(formData); // Update previous formData
     }
-   
-  }, [formData,formDataOpenAI]); 
+  }, [formData, formDataOpenAI]);
   const handleFormDataChange = async (formData) => {
     console.log("Form Data has changed:", formData);
-   
+
     // You can now directly validate the entire formData or specific fields
     // Example: You can validate each field and set errors for each one
     for (const [name, value] of Object.entries(formData)) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        [name]: "" // Reset any previous errors for the specific field
+        [name]: "", // Reset any previous errors for the specific field
       }));
-      
+
       if (name === "deploymentModel" || name === "apiVersion") {
-        
-        if (JSON.stringify(prevFormData[name]) !== JSON.stringify(formData[name]) ) {
+        if (
+          JSON.stringify(prevFormData[name]) !== JSON.stringify(formData[name])
+        ) {
           setValidity((prevValidity) => ({ ...prevValidity, [name]: false }));
           setErrors((prevErrors) => ({
             ...prevErrors,
@@ -111,28 +119,33 @@ const Home = () => {
           }));
         }
       }
-  
+
       if (name === "endpoint") {
-      
         if (validateEndpoint(value)) {
           setValidity((prevValidity) => ({ ...prevValidity, [name]: true }));
           setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-        } 
-      else if (JSON.stringify(prevFormData['endpoint']) !== JSON.stringify(formData['endpoint'])){
+        } else if (
+          JSON.stringify(prevFormData["endpoint"]) !==
+          JSON.stringify(formData["endpoint"])
+        ) {
           setValidity((prevValidity) => ({ ...prevValidity, [name]: false }));
-          setErrors((prevErrors) => ({ ...prevErrors, [name]: validate(name, value) }));
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            [name]: validate(name, value),
+          }));
         }
-  
-      
       }
-  
+
       // Key validation and connection string generation logic
-      if ((formData['key'] != '') && (formData['enpoint']!='')) {
-        setLoading((prevLoading) => ({ ...prevLoading, ['key']: true }));
-       
-        const connectionString = generateConnectionString(formData['endpoint'], formData['key']);
+      if (formData["key"] != "" && formData["enpoint"] != "") {
+        setLoading((prevLoading) => ({ ...prevLoading, ["key"]: true }));
+
+        const connectionString = generateConnectionString(
+          formData["endpoint"],
+          formData["key"]
+        );
         console.log(connectionString);
-  
+
         try {
           const response = await fetch(
             "https://pod-7backend-g6fffpfpfhfyheh0.canadacentral-01.azurewebsites.net/config/storage",
@@ -144,28 +157,31 @@ const Home = () => {
               }),
             }
           );
-  
+
           const result = await response.json();
-          
-  
+
           if (result.message === "Azure Storage configured successfully!") {
-            setValidity((prevValidity) => ({ ...prevValidity, ['key']: true }));
-            setErrors((prevErrors) => ({ ...prevErrors, ['key']: "" }));
+            setValidity((prevValidity) => ({ ...prevValidity, ["key"]: true }));
+            setErrors((prevErrors) => ({ ...prevErrors, ["key"]: "" }));
           } else {
-            setValidity((prevValidity) => ({ ...prevValidity, ['key']: false }));
-            setErrors((prevErrors) => ({ ...prevErrors, ['key']: validate('key', formData['key']) }));
+            setValidity((prevValidity) => ({
+              ...prevValidity,
+              ["key"]: false,
+            }));
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              ["key"]: validate("key", formData["key"]),
+            }));
           }
-  
         } catch (error) {
-          setValidity((prevValidity) => ({ ...prevValidity, ['key']: false }));
+          setValidity((prevValidity) => ({ ...prevValidity, ["key"]: false }));
         } finally {
-          setLoading((prevLoading) => ({ ...prevLoading, ['key']: false }));
+          setLoading((prevLoading) => ({ ...prevLoading, ["key"]: false }));
         }
       }
-      
     }
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     let validationErrors = {};
@@ -183,141 +199,151 @@ const Home = () => {
   };
 
   const handleChange1 = (e) => {
-    setSelectedService(e.target.value)
+    setSelectedService(e.target.value);
     setSuccesskey(true); // Update selected cloud service
   };
   const handleNext = () => {
-   
-    if (currentStep <= steps.length) {
-      
-      if (currentStep ===1){
-      setFormDataOpenAI({
-        endpoint: formData.endpoint,
-        key: formData.key,
-        deploymentModel: formData.deploymentModel,
-        apiVersion: formData.apiVersion,
-      });
-      
+    if (currentStep <= steps.length - 1) {
+      if (currentStep === 1) {
+        setFormDataOpenAI({
+          endpoint: formData.endpoint,
+          key: formData.key,
+          deploymentModel: formData.deploymentModel,
+          apiVersion: formData.apiVersion,
+        });
       }
-        if (currentStep ===2){
-      setFormDataDI({
-        endpoint: formData.endpoint,
-        key: formData.key,
-        deploymentModel: formData.deploymentModel,
-        
-      });
-      
-      }
-      if (currentStep ===3){
+      if (currentStep === 2) {
         setFormDataDI({
           endpoint: formData.endpoint,
           key: formData.key,
-         
-          
+          deploymentModel: formData.deploymentModel,
         });
-        
-        }
+      }
+
       setFormData({
-        endpoint: '',
-        key: '',
-        deploymentModel:  '',
-        apiVersion:  '',
+        endpoint: "",
+        key: "",
+        deploymentModel: "",
+        apiVersion: "",
       });
       setErrors({
-        endpoint: '',
-        key: '',
-        deploymentModel:  '',
-        apiVersion:  '',
+        endpoint: "",
+        key: "",
+        deploymentModel: "",
+        apiVersion: "",
       });
       setPrevFormData({
-        endpoint: '',
-        key: '',
-        deploymentModel:  '',
-        apiVersion:  '',
+        endpoint: "",
+        key: "",
+        deploymentModel: "",
+        apiVersion: "",
       });
       setCurrentStep(currentStep + 1);
-      
-      setSuccesskey(false);
-   
-    
-    };
-  
-   
-    
-  };
 
+      setSuccesskey(false);
+    }
+  };
+  const handleSkip = () => {
+    setFormData({
+      endpoint: "",
+      key: "",
+      deploymentModel: "",
+      apiVersion: "",
+    });
+    setErrors({
+      endpoint: "",
+      key: "",
+      deploymentModel: "",
+      apiVersion: "",
+    });
+    setPrevFormData({
+      endpoint: "",
+      key: "",
+      deploymentModel: "",
+      apiVersion: "",
+    });
+    setCurrentStep(currentStep + 1);
+
+    setSuccesskey(false);
+  };
   const handleDiscard = () => {
-    setSelectedService('')
+    setSelectedService("");
     setSuccesskey(false);
     setCurrentStep(0);
-  
   };
- 
-  
-  useEffect(() => {
-    if(currentStep ===1){
-    const allValuesFilled = Object.values(formData).every((value) => value !== "");
-    const noErrors = Object.values(errors).every((error) => error === "");
-    const noLoading = Object.values(loading).every((load) => load === false);
-    if (allValuesFilled && noErrors && noLoading) {
-      setSuccesskey(true);
-      
-    } else {
-      console.log(allValuesFilled,noErrors)
-      setSuccesskey(false); // Optionally reset success if conditions are not met
-    }}
-    if (currentStep===2){
-      const allValuesFilled = Object.entries(formData)
-  .every(([key, value]) => key === "apiVersion" || value !== "");
-  const noErrors = Object.values(errors).every((error) => error === "");
-  const noLoading = Object.values(loading).every((load) => load === false);
-  if (allValuesFilled && noErrors && noLoading) {
-    setSuccesskey(true);
-    
-  } else {
-    console.log(allValuesFilled,noErrors)
-    setSuccesskey(false); // Optionally reset success if conditions are not met
-  }
-    }
-    if (currentStep===3){
-      const allValuesFilled = Object.entries(formData)
-      .every(([key, value]) => ["apiVersion", "deploymentModel"].includes(key) || value !== "");
-    
-  const noErrors = Object.values(errors).every((error) => error === "");
-  const noLoading = Object.values(loading).every((load) => load === false);
-  if (allValuesFilled && noErrors && noLoading) {
-    setSuccesskey(true);
-    
-  } else {
-    console.log(allValuesFilled,noErrors)
-    setSuccesskey(false); // Optionally reset success if conditions are not met
-  }
-    }
-    
-  }, [formData, errors,loading,prevFormData]); // Re-run the effect when formData or errors change
 
- console.log("errors",errors)
+  useEffect(() => {
+    if (currentStep === 1) {
+      const allValuesFilled = Object.values(formData).every(
+        (value) => value !== ""
+      );
+      const noErrors = Object.values(errors).every((error) => error === "");
+      const noLoading = Object.values(loading).every((load) => load === false);
+      if (allValuesFilled && noErrors && noLoading) {
+        setSuccesskey(true);
+      } else {
+        console.log(allValuesFilled, noErrors);
+        setSuccesskey(false); // Optionally reset success if conditions are not met
+      }
+    }
+    if (currentStep === 2) {
+      const allValuesFilled = Object.entries(formData).every(
+        ([key, value]) => key === "apiVersion" || value !== ""
+      );
+      const noErrors = Object.values(errors).every((error) => error === "");
+      const noLoading = Object.values(loading).every((load) => load === false);
+      if (allValuesFilled && noErrors && noLoading) {
+        setSuccesskey(true);
+      } else {
+        console.log(allValuesFilled, noErrors);
+        setSuccesskey(false); // Optionally reset success if conditions are not met
+      }
+    }
+    if (currentStep === 3) {
+      const allValuesFilled = Object.entries(formData).every(
+        ([key, value]) =>
+          ["apiVersion", "deploymentModel"].includes(key) || value !== ""
+      );
+
+      const noErrors = Object.values(errors).every((error) => error === "");
+      const noLoading = Object.values(loading).every((load) => load === false);
+      if (allValuesFilled && noErrors && noLoading) {
+        setSuccesskey(true);
+      } else {
+        console.log(allValuesFilled, noErrors);
+        setSuccesskey(false); // Optionally reset success if conditions are not met
+      }
+    }
+  }, [formData, errors, loading, prevFormData]); // Re-run the effect when formData or errors change
+
+  console.log("errors", errors);
   return (
     <div className="min-h-screen w-full bg-white text-black main-content  relative">
-    
-    
-    <div className="upload-container relative bg-gray-100 p-4">
-  {/* Discard Button Wrapper with Background Color */}
-  <div className="mt-7 top-0 right-0   h-14 rounded-lg w-full">
-    <button className="discard-btn w-32 "  style={{marginRight:'-2%'}} onClick={handleDiscard}>
-      Discard
-    </button>
-  </div>
-        <div className="upload-sections-wrapper" style={{marginTop:'-4%'}}>
-        
-          <div className="upload-section " >
-            <h2 className=" upload-section1 config-heading text-center whitespace-nowrap"  style={{ width: "100%",marginTop:'-4%' }}>
-              
+      <div className="upload-container relative bg-gray-100 p-4">
+        {/* Discard Button Wrapper with Background Color */}
+        <div className="mt-7 top-0 right-0   h-14 rounded-lg w-full">
+          <button
+            className="discard-btn w-32 "
+            style={{ marginRight: "-2%" }}
+            onClick={handleDiscard}
+          >
+            Discard
+          </button>
+        </div>
+        <div className="upload-sections-wrapper" style={{ marginTop: "-4%" }}>
+          <div className="upload-section ">
+            <h2
+              className=" upload-section1 config-heading text-center whitespace-nowrap"
+              style={{ width: "100%", marginTop: "-4%" }}
+            >
               Cloud Service Configuration
             </h2>
             <ul className="relative ml-5 mt-10">
               {steps.map((step, index) => (
-                <li key={index} className="flex items-start space-x-3 relative whitespace-nowrap">
+                <li
+                  key={index}
+                  className="flex items-start space-x-3 relative whitespace-nowrap"
+                >
                   {/* Icon & Line Container */}
                   <div className="flex flex-col items-center">
                     {index < currentStep ? (
@@ -421,7 +447,7 @@ const Home = () => {
           <div className="upload-section" style={{ width: "60%" }}>
             <h2
               className=" upload-section1 config-heading text-center "
-              style={{ width: "100%",marginTop:'-1.7%' }}
+              style={{ width: "100%", marginTop: "-1.7%" }}
             >
               {" "}
               {steps[currentStep]}
@@ -434,7 +460,7 @@ const Home = () => {
                     type="radio"
                     name="cloudService"
                     value="Azure"
-                    checked={selectedService === 'Azure'}
+                    checked={selectedService === "Azure"}
                     onChange={handleChange1}
                   />
 
@@ -502,16 +528,15 @@ const Home = () => {
                 onSubmit={handleSubmit}
                 className="p-6 h-32 w-full mx-auto bg-white rounded-2xl "
               >
-               
                 <div className="grid grid-cols-2 gap-6 mt-0">
-                  <div>
+                  <div className="">
                     <label className="block text-gray-700 text-lg font-semibold mb-2 whitespace-nowrap">
                       Deployment Model
                     </label>
                     <input
                       type="text"
                       name="deploymentModel"
-                      value={formData.deploymentModel }
+                      value={formData.deploymentModel}
                       onChange={handleChange}
                       className="w-full  h-12 text-lg bg-slate-100 border border-gray-300 p-2 rounded-lg outline-none"
                     />
@@ -522,6 +547,23 @@ const Home = () => {
                     )}
                   </div>
                   <div>
+                    <div
+                      className="float-end"
+                      style={{ marginTop: "-1.5rem", marginRight: "1rem" }}
+                    >
+                      <button
+                        onClick={handleSkip} // Replace with your actual handler
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "#007bff",
+                          cursor: "pointer",
+                          fontSize: "1.2rem",
+                        }}
+                      >
+                        Skip
+                      </button>
+                    </div>
                     <label className="block text-gray-700 text-lg font-semibold mb-2 whitespace-nowrap">
                       API Version
                     </label>
@@ -548,13 +590,12 @@ const Home = () => {
                       <input
                         type="text"
                         name="endpoint"
-                        value={formData.endpoint }
+                        value={formData.endpoint}
                         onChange={handleChange}
                         className={`w-full h-12 text-lg bg-slate-100 border p-2 rounded-lg outline-none `}
                       />
                       <span className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      
-                        {(formData.endpoint!== ""  && loading.endpoint) ? (
+                        {formData.endpoint !== "" && loading.endpoint ? (
                           <span className="inline-block w-4 h-4  animate-pulse rounded-sm"></span>
                         ) : formData.endpoint !== "" ? (
                           validity.endpoint ? (
@@ -602,7 +643,7 @@ const Home = () => {
                         <input
                           type="text"
                           name="key"
-                          value={formData.key }
+                          value={formData.key}
                           onChange={handleChange}
                           className="w-full h-12 text-lg bg-slate-100 border border-gray-300 p-2 rounded-lg outline-none"
                           style={{
@@ -619,11 +660,10 @@ const Home = () => {
                           }}
                         />
                       </div>
-                      
+
                       <span className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                        {(formData.key !== ""  && loading.key) ? (
+                        {formData.key !== "" && loading.key ? (
                           <span className="w-5 h-5 block border-2 border-black relative animate-borderChange"></span>
-                          
                         ) : formData.key !== "" ? (
                           validity.key ? (
                             <FaCheckCircle className="w-5 h-5 text-green-500" /> // Green check for success
@@ -640,12 +680,11 @@ const Home = () => {
                 </div>
               </form>
             )}
-              {currentStep === 2 && (
+            {currentStep === 2 && (
               <form
                 onSubmit={handleSubmit}
                 className="p-6 h-32 w-full mx-auto bg-white rounded-2xl "
               >
-               
                 <div className="grid grid-cols-2 gap-6 mt-2">
                   <div>
                     <label className="block text-gray-700 text-lg font-semibold mb-2">
@@ -664,7 +703,25 @@ const Home = () => {
                       </p>
                     )}
                   </div>
-                 
+                  <div>
+                    <div
+                      className="float-end"
+                      style={{ marginTop: "-1.5rem", marginRight: "1rem" }}
+                    >
+                      <button
+                        onClick={handleSkip} // Replace with your actual handler
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "#007bff",
+                          cursor: "pointer",
+                          fontSize: "1.2rem",
+                        }}
+                      >
+                        Skip
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-6 mt-4">
                   <div>
@@ -680,8 +737,7 @@ const Home = () => {
                         className={`w-full h-12 text-lg bg-slate-100 border p-2 rounded-lg outline-none `}
                       />
                       <span className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      
-                        {(formData.endpoint!== ""  && loading.endpoint) ? (
+                        {formData.endpoint !== "" && loading.endpoint ? (
                           <span className="inline-block w-4 h-4  animate-pulse rounded-sm"></span>
                         ) : formData.endpoint !== "" ? (
                           validity.endpoint ? (
@@ -746,11 +802,10 @@ const Home = () => {
                           }}
                         />
                       </div>
-                      
+
                       <span className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                        {(formData.key !== ""  && loading.key) ? (
+                        {formData.key !== "" && loading.key ? (
                           <span className="w-5 h-5 block border-2 border-black relative animate-borderChange"></span>
-                          
                         ) : formData.key !== "" ? (
                           validity.key ? (
                             <FaCheckCircle className="w-5 h-5 text-green-500" /> // Green check for success
@@ -767,13 +822,11 @@ const Home = () => {
                 </div>
               </form>
             )}
-              {currentStep === 3 && (
+            {currentStep === 3 && (
               <form
                 onSubmit={handleSubmit}
                 className="p-6 h-32 w-full mx-auto bg-white rounded-2xl "
               >
-               
-                
                 <div className="grid grid-cols-2 gap-6 mt-4">
                   <div>
                     <label className="block text-gray-700 text-lg font-semibold mb-2">
@@ -788,9 +841,8 @@ const Home = () => {
                         className={`w-full h-12 text-lg bg-slate-100 border p-2 rounded-lg outline-none `}
                       />
                       <span className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      
-                        {(formData.endpoint!== ""  && loading.endpoint) ? (
-                          <span className="inline-block w-4 h-4  animate-pulse rounded-sm"></span>
+                        {formData.endpoint !== "" && loading.endpoint ? (
+                          <span className="inline-block w-4 h-4  animate-pulse rounded-sm border-dotted"></span>
                         ) : formData.endpoint !== "" ? (
                           validity.endpoint ? (
                             <FaCheckCircle className="w-5 h-5 text-green-500" /> // Green check for success
@@ -854,11 +906,10 @@ const Home = () => {
                           }}
                         />
                       </div>
-                      
+
                       <span className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                        {(formData.key !== ""  && loading.key) ? (
+                        {formData.key !== "" && loading.key ? (
                           <span className="w-5 h-5 block border-2 border-black relative animate-borderChange"></span>
-                          
                         ) : formData.key !== "" ? (
                           validity.key ? (
                             <FaCheckCircle className="w-5 h-5 text-green-500" /> // Green check for success
@@ -875,37 +926,31 @@ const Home = () => {
                 </div>
               </form>
             )}
-         
-           
+
             {/* Next Button at the Bottom Right */}
             <div className="flex justify-between items-center w-full mt-4">
               {/*<button className="previous-btn w-32" onClick={handlePrevious}>
                 Previous
               </button>*/}
-              {(successKey && currentStep!==3)  && (
-                <button
-                  className="next-btn w-32 "
-                  onClick={handleNext}
-                  
-                >
+              {successKey && currentStep !== 3 && (
+                <button className="next-btn w-32 " onClick={handleNext}>
                   Next
                 </button>
               )}
-               {(successKey && currentStep==3)  && (
+              {successKey && currentStep == 3 && (
                 <NavLink
-                onClick={() =>  { setSidebarCurrentStep(1)}}
-                            to='/data_load'
-                            key='data_load'
-                           
-                           
-                          >
-                <button
-                  className="next-btn w-32 "
-                  
-                  
+                  onClick={() => {
+                    setSidebarCurrentStep(1);
+                    setFormDataStorage({
+                      endpoint: formData.endpoint,
+                      key: formData.key,
+                    });
+                  }}
+                  to="/data_load"
+                  key="data_load"
                 >
-                  Next
-                </button></NavLink>
+                  <button className="next-btn w-32 ">Next</button>
+                </NavLink>
               )}
               {!successKey && (
                 <button className="nextdisable-btn w-32 ">Next</button>
