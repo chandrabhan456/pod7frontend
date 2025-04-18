@@ -7,7 +7,7 @@ const steps = [
   "Configuration",
   "Data-Load",
   "Document-Preprocessing",
-  "LLM-Interfarence",
+  "Data-Preparation",
   "Export Data",
 ];
 const Sidebar = () => {

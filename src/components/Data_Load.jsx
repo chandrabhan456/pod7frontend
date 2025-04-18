@@ -15,6 +15,8 @@ const steps = [
 
 const Data_Load = () => {
   const {
+    selectedPDFFile,
+    setSelectedPDFFile,
     setSidebarCurrentStep,
     formDataStorage,
     setFormDataStorage,
@@ -167,7 +169,7 @@ const Data_Load = () => {
       
       setDownloadedDocument({ name: documentName, url: fileUrl });
       
-      
+      setSelectedPDFFile({ name: documentName, url: fileUrl });
     }catch (err) {
       setError(err.message);
     } finally {

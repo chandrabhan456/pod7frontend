@@ -16,6 +16,7 @@ const steps = [
  const Document_Preprossing = () => {
   const {
     setSidebarCurrentStep,
+    selectedPDFFile,
     formDataStorage,
     setFormDataStorage,
     formDataDI,
@@ -25,248 +26,90 @@ const steps = [
   } = useStateContext();
   const [currentStep, setCurrentStep] = useState(0);
   const [successKey, setSuccesskey] = useState(false);
-  const [containers, setContainers] = useState([]);
-  const [error, setError] = useState(null);
-  const [selectedContainers, setSelectedContainers] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [documents, setDocuments] = useState([]);
-  const [structuredDocuments, setStructuredDocuments] = useState({});
-  const [selectedDocument, setSelectedDocument] = useState(null);
-  const [containerName, setContainerName] = useState(null);
-  const [folderName, setFolderName] = useState(null);
-  const [downloadedDocument, setDownloadedDocument] = useState(null);
-  const generateConnectionString = (endpoint, key) => {
-    // Extract AccountName from endpoint (the part before .blob.core.windows.net)
-    const accountName = endpoint.split(".")[0].replace("https://", "");
-    console.log("formdataDI", formDataDI);
-    console.log("formdataStorage", formDataStorage);
-    // Construct the connection string
-    const connectionString = `DefaultEndpointsProtocol=https;AccountName=${accountName};AccountKey=${key};EndpointSuffix=core.windows.net`;
-
-    return connectionString;
-  };
-  useEffect(() => {
-    setIsLoading(true)
-    const fetchContainers = async () => {
-      const connectionString = generateConnectionString(
-        formDataStorage["endpoint"],
-        formDataStorage["key"]
-      );
-      console.log(connectionString);
-
-      try {
-        const response = await fetch(
-          "https://pod-7backend-g6fffpfpfhfyheh0.canadacentral-01.azurewebsites.net/Data-Load/containers",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              connection_string: connectionString,
-            }),
-          }
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json(); // Parse JSON here
-        console.log("Containers:", data);
-        setContainers(data.containers); // Assuming API returns { containers: ["container1", "container2"] }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchContainers();
-  }, []); // Runs only on mount
-  useEffect(() => {
-    console.log("Updated Containers:", containers);
-
-  }, [containers]); // This runs whenever `containers` updates
-  const fetchContainersdocument = async () => {
-    const connectionString = generateConnectionString(
-      formDataStorage["endpoint"],
-      formDataStorage["key"]
-    );
-    console.log(connectionString);
-
-    try {
-      const response = await fetch(
-        "https://pod-7backend-g6fffpfpfhfyheh0.canadacentral-01.azurewebsites.net/Data-Load/documents",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            connection_string: connectionString,
-            container_names: selectedContainers,
-          }),
-        }
-      );
+  const [inputSectionValue, setInputSectionValue] = useState("^(\\d+\\.)\\s+(.*)");
   
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.statusText}`);
-      }
-  
-      const data = await response.json();
-      console.log("Documents:", data);
-      setDocuments(data)
-    
-    }catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  const handleCheckboxChange = (event) => {
-   
-    const { checked, value } = event.target;
-   
-    setSelectedContainers((prevSelected) =>
-      checked ? [...prevSelected, value] : prevSelected.filter((c) => c !== value)
-    );
-  };
-  const downloadDocument = async () => {
-    
-    const connectionString = generateConnectionString(
-      formDataStorage["endpoint"],
-      formDataStorage["key"]
-    );
-    console.log(connectionString);
-    const documentName = folderName === 'nofolder' 
-    ? selectedDocument 
-    : `${folderName}/${selectedDocument}`;
+  const [selectedMethod, setSelectedMethod] = useState('not-required');
 
-    try {
-      const response = await fetch(
-        "https://pod-7backend-g6fffpfpfhfyheh0.canadacentral-01.azurewebsites.net/Data-Load/documents/download",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            connection_string: connectionString,
-            container_name: containerName,
-            document_name: documentName
-          }),
-        }
-      );
-    
-      if (!response.ok) {
-        throw new Error('Failed to download document');
-      }
-      
-     
-     
-      const arrayBuffer = await response.arrayBuffer();
-
-      // If your file is a PDF:
-      const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
-      
-      const fileUrl = URL.createObjectURL(blob);
-      
-      setDownloadedDocument({ name: documentName, url: fileUrl });
-      
-      
-    }catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  const handleNext = () => {
-    if (currentStep <= steps.length) {
-      if(currentStep===0){
-        setIsLoading(true)
-        fetchContainersdocument()
-        
-      }
-      if(currentStep===1){
-        setIsLoading(true)
-        downloadDocument()
-        
-      }
-      setCurrentStep(currentStep + 1);
-
-      setSuccesskey(false);
-    }
+  const [inputSubSectionValue, setInputSubSectionValue] = useState("^(\\d+\\.\\d+)\\.?\\s+(.+)");
+  const [inputBulletValue, setInputBulletValue] = useState("^\\s*([a-z])\\.?\\s+(.+)");
+  const [result,setResult] = useState("")
+   const [isLoading, setIsLoading] = useState(false);
+  console.log("pdffile is",selectedPDFFile)
+  const handleNext = async () => {
  
-  };
-  const transformDocuments = (documents) => {
-    const result = {};
+    if (currentStep <= steps.length) {
+      setCurrentStep((prev) => prev + 1);
+      if (currentStep === 0) {
+     
+        setIsLoading(true)
+        try {
+       
+          // Fetch blob from the blob URL
+          const response = await fetch(selectedPDFFile.url);
+          const blob = await response.blob();
   
-    // Loop through each container (e.g., msadoc, test1, etc.)
-    Object.entries(documents).forEach(([containerName, items]) => {
-      result[containerName] = {};
+          // Create FormData as per the curl structure
+          const formData = new FormData();
+          formData.append('file', new File([blob], selectedPDFFile.name, { type: 'application/pdf' }));
+          formData.append('section_pattern', inputSectionValue);
+          formData.append('subsection_pattern', inputSubSectionValue);
+          formData.append('bullet_pattern', inputBulletValue);
   
-      // Ensure items is an array
-      if (!Array.isArray(items)) {
-        console.warn(`Skipping container "${containerName}" - items is not an array`, items);
-        return;
-      }
+          // API call
+          const apiResponse = await fetch(
+            'https://pod-7backend-g6fffpfpfhfyheh0.canadacentral-01.azurewebsites.net/Document-Preprocessing/extract-text',
+            {
+              method: 'POST',
+              headers: {
+                // 'Content-Type' should NOT be set manually when using FormData
+                accept: 'application/json',
+              },
+              body: formData,
+            }
+          );
   
-      // Loop through each document in the container
-      items.forEach((item) => {
-        const parts = item.split("/");  // Split by '/' to separate folder and filename
-        const hasFolder = parts.length > 1;  // If there are folders in the path
+          if (!apiResponse.ok) {
+            throw new Error('API request failed');
+          }
   
-        const folder = hasFolder ? parts[0] : "nofolder";  // First part is folder or "nofolder"
-        const fileName = hasFolder ? parts.slice(1).join("/") : item;  // Join the rest as the filename
-  
-        // Initialize folder if not already present
-        if (!result[containerName][folder]) {
-          result[containerName][folder] = { documents: [] };
+          const result = await apiResponse.json();
+          setResult(result)
+         console.log("result",result)//  setSelectedPdfFile(result); // Save full JSON response
+        } catch (error) {
+          console.error('Error uploading file to API:', error);
+          return; // Prevent advancing step on error
         }
+        finally {
+          setIsLoading(false)
+        }
+      }
+    
   
-        // Add the document to the folder's "documents" array
-        result[containerName][folder].documents.push(fileName);
-      });
-    });
-  
-    return result;
-  };
-  
-  
-  
-  useEffect(() => {
-    console.log("Updated Documents:", documents);
-    if (documents && Object.keys(documents).length > 0){
-      const transformed = transformDocuments(documents.documents);
-      console.log("Transformed Structure:", transformed);
-      // You can also store it in state if needed
-      setStructuredDocuments(transformed);
+      // Proceed to next step
+     
     }
-  }, [documents,folderName,containerName]); 
-  const handleDiscard = () => {
-    setSuccesskey(false);
+  };
+  
+  
+const handleDiscard = () => {
+    setSuccesskey(true);
     setCurrentStep(0);
-    setSelectedContainers([])
+    if(inputBulletValue!=="")
+    {
+      setSuccesskey(true)
+    }
   };
   
-  const handleDocumentChange = (event) => {
-    const selectedDocument = event.target.value;
-    // Optionally, you could track which container and folder the document came from
-    const [containerName, folderName] = event.target.name.split('-').slice(0, 2);
-  
-    // Update the selected document in your state
-    setSelectedDocument(selectedDocument);
-    setContainerName(containerName);
-    setFolderName(folderName);
-    // If you need to know the container and folder (for further logic), you can use the variables
-    console.log('Selected document:', selectedDocument);
-    console.log('Container name:', containerName);
-    console.log('Folder name:', folderName);
-  };
   
   useEffect(() => {
   
     
-    if(currentStep===0 && selectedContainers.length>0)
+    if(currentStep===0 && inputSectionValue && inputSubSectionValue && inputBulletValue )
     {
      
       setSuccesskey(true)
     }
-    if(currentStep===1 && selectedDocument!=='')
+    if(currentStep===1 )
       {
        
         setSuccesskey(true)
@@ -276,7 +119,7 @@ const steps = [
          
           setSuccesskey(true)
         }
-  }, [selectedContainers,documents,selectedDocument]); // This runs whenever `containers` updates
+  }, []); // This runs whenever `containers` updates
   
   
   return (
@@ -436,7 +279,9 @@ const steps = [
             </button>
           </div>
           <input
-            type="text"
+             type="text"
+             value={inputSectionValue}
+             onChange={(e) => setInputSectionValue(e.target.value)}
             placeholder=""
             className=" w-full h-12 text-lg bg-slate-100 border border-gray-300 p-2 rounded-lg"
           />
@@ -464,6 +309,8 @@ const steps = [
           </div>
           <input
             type="text"
+            value={inputSubSectionValue}
+            onChange={(e) => setInputSubSectionValue(e.target.value)}
             placeholder=""
             className=" w-full h-12 text-lg bg-slate-100 border border-gray-300 p-2 rounded-lg"
           />
@@ -489,6 +336,8 @@ const steps = [
           </div>
           <input
             type="text"
+            value={inputBulletValue}
+            onChange={(e) => setInputBulletValue(e.target.value)}
             placeholder=""
             className=" w-full h-12 text-lg bg-slate-100 border border-gray-300 p-2 rounded-lg"
           />
@@ -497,6 +346,74 @@ const steps = [
      
          </form>
   }
+ {currentStep === 1 && (
+  <div className="max-h-[20rem] overflow-y-auto pr-2 scrollbar-custom">
+  {!result?.formatted_JSON ? (
+      <div className="loading-container mt-10 flex justify-center items-center">
+        <span className="dot"></span>
+        <span className="dot ml-2"></span>
+        <span className="dot ml-2"></span>
+      </div>
+    ) : (
+      result?.formatted_JSON &&
+      Object.entries(result.formatted_JSON).map(([sectionTitle, subsections]) => {
+        if (sectionTitle === "None None") return null;
+
+        return (
+          <div key={sectionTitle} className="mt-6">
+             <h2 className="text-lg font-bold text-gray-800 mb-1">{sectionTitle}</h2>
+            {Object.entries(subsections).map(([subTitle, items]) => (
+              <div key={subTitle} className="ml-4 mt-2">
+                <h3 className="text-md font-semibold text-gray-700">{subTitle}</h3>
+                <ul className="list-disc ml-6 text-gray-600">
+                  {items.map((text, idx) =>
+                    text.trim() ? <li key={idx}>{text}</li> : null
+                  )}
+                </ul>
+              </div>
+            ))}
+          </div>
+        );
+      })
+    )}
+  </div>
+)}
+{currentStep === 2 && (
+  <div className="mt-10">
+   
+    {/* Not Required Option - Disabled */}
+    <label className="flex items-center justify-start ml-5">
+  <input
+    type="radio"
+    name="method"
+    value="not-required"
+    checked={selectedMethod === 'not-required'}
+    onChange={() => setSelectedMethod('not-required')}
+    className="form-radio text-blue-600  w-4 h-4 rounded-full"
+    
+  />
+  <span className="text-gray-700 ml-2 pl-0 text-lg">Not Required</span>
+</label>
+
+
+    {/* Document Intelligence Option - Active */}
+    <label className="flex items-center justify-start ml-5 mt-2">
+      <input
+        type="radio"
+        name="method"
+        value="document-intelligence"
+        className="form-radio text-blue-600  w-4 h-4 rounded-full"
+        checked={selectedMethod === 'document-intelligence'}
+        onChange={() => setSelectedMethod('document-intelligence')}
+        disabled
+      />
+      <span className="text-gray-700 ml-2 pl-0 text-lg">Document-Intelligence</span>
+    </label>
+  </div>
+)}
+
+
+
 
           
             {/* Next Button at the Bottom Right */}
@@ -504,25 +421,15 @@ const steps = [
               {/*<button className="previous-btn w-32" onClick={handlePrevious}>
                 Previous
               </button>*/}
-              {successKey && currentStep !== 3 && (
+              
+              {(!isLoading && currentStep !== 3) && (
+                
                 <button className="next-btn w-32 " onClick={handleNext}>
                   Next
                 </button>
               )}
-              { currentStep == 2 && (
-                <NavLink
-                  onClick={() => {
-                    setSidebarCurrentStep(2);
-                  }}
-                  to="/document_preprossesing"
-                  key="document_preprossesing"
-                >
-                  <button className="next-btn w-32 ">Next</button>
-                </NavLink>
-              )}
-              {!successKey && (
-                <button className="nextdisable-btn w-32 ">Next</button>
-              )}
+            
+            
             </div>
           </div>
         </div>

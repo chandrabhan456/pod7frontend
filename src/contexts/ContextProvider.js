@@ -50,6 +50,7 @@ export const ContextProvider = ({ children }) => {
       key: "",
     
     });
+    const [selectedPDFFile,setSelectedPDFFile] = useState("")
   const [home,setHome] = useState(true)
   const [playgrond,setPlaygrond] = useState(false)
   const [vertorDB,setVectorDB] = useState(false)
@@ -61,7 +62,7 @@ export const ContextProvider = ({ children }) => {
 
   return (
     // eslint-disable-next-line react/jsx-no-constructed-context-values
-    <StateContext.Provider value={{sidebarCurrentStep,setSidebarCurrentStep,formDataStorage, setFormDataStorage,formDataDI, setFormDataDI,formDataOpenAI, setFormDataOpenAI,currentMode, setCurrentMode,vertorDB,setVectorDB, playgrond,setPlaygrond,home,setHome,login1,setlogin1,mainPage,setMainPage,activeMenu,setActiveMenu,handleClick,setIsClicked,isClicked,initialState,setCurrentColor}}>
+    <StateContext.Provider value={{selectedPDFFile,setSelectedPDFFile,sidebarCurrentStep,setSidebarCurrentStep,formDataStorage, setFormDataStorage,formDataDI, setFormDataDI,formDataOpenAI, setFormDataOpenAI,currentMode, setCurrentMode,vertorDB,setVectorDB, playgrond,setPlaygrond,home,setHome,login1,setlogin1,mainPage,setMainPage,activeMenu,setActiveMenu,handleClick,setIsClicked,isClicked,initialState,setCurrentColor}}>
       {children}
     </StateContext.Provider>
   );
