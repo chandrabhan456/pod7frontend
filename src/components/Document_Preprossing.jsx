@@ -435,6 +435,17 @@ const handleDiscard = () => {
                   Next
                 </button>
               )}
+                { currentStep === 2 && (
+                              <NavLink
+                                onClick={() => {
+                                  setSidebarCurrentStep(3);
+                                }}
+                                to="/data_preparation"
+                                key="data_preparation"
+                              >
+                                <button className="next-btn w-32 ">Next</button>
+                              </NavLink>
+                            )}
             </div>
           </div>
         </div>
