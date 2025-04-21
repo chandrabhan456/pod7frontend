@@ -130,7 +130,7 @@ ul li:not(:last-child)::after {
 .next-btn {
   position: absolute;
   bottom: 1.5rem;
-  right: .5rem;
+  right: 1rem;
   padding: 0.8rem 2rem;
   font-size: 1rem;
   background: #578FCA;
@@ -145,7 +145,7 @@ ul li:not(:last-child)::after {
 .nextdisable-btn {
   position: absolute;
   bottom: 1.5rem;
-  right: .5rem;
+  right: 1rem;
   padding: 0.8rem 2rem;
   font-size: 1rem;
   background: white;
@@ -345,6 +345,6 @@ li::after {
   background: #f1f1f1;
 }
 .scrollbar-custom::-webkit-scrollbar-thumb {
-  background-color: gray;
+  background-color: #1e3a8a;
   border-radius: 4px;
 }

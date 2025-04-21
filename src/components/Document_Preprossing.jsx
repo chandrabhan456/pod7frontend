@@ -259,10 +259,10 @@ const handleDiscard = () => {
               {steps[currentStep]}
             </h2>
            {currentStep === 0 &&  
-           <form className=" w-full mt-10 flex flex-wrap ">
+           <form className=" w-full mt-5 flex flex-wrap ">
 
            {/* Parameter 1 */}
-           <div className="flex w-full sm:w-[calc(50%-0.5rem)] flex-col sm:flex-row gap-2 p-4">
+           <div className=" w-full sm:w-[calc(50%-0.5rem)] flex-col sm:flex-row gap-2 p-4">
              <label className="w-1/3 text-base font-medium whitespace-nowrap">Section Pattern</label>
              <div className="flex flex-col w-full gap-2">
              <div className="relative">
@@ -291,9 +291,9 @@ const handleDiscard = () => {
            
      
            {/* Parameter 2 */}
-           <div className="flex w-full sm:w-[calc(50%-0.5rem)] flex-col sm:flex-row gap-2 p-4">
-             <label className="w-1/3 text-base font-medium whitespace-nowrap">Subsection</label>
-             <div className="flex flex-col w-[130%] gap-2">
+           <div className=" w-full sm:w-[calc(50%-0.5rem)] flex-col sm:flex-row gap-2 p-4">
+             <label className="w-1/3 text-base font-medium whitespace-nowrap">Subsection Pattern</label>
+             <div className="flex flex-col w-[100%] gap-2">
              <div className="relative">
             <input
               type="text"
@@ -318,9 +318,9 @@ const handleDiscard = () => {
            </div>
      
            {/* Parameter 3 */}
-           <div className="flex w-full sm:w-[calc(50%-0.5rem)] flex-col sm:flex-row gap-2 p-4">
+           <div className=" w-full sm:w-[calc(50%-0.5rem)] flex-col sm:flex-row gap-2 p-4">
              <label className="w-1/3 text-base font-medium whitespace-nowrap">Bullet Pattern</label>
-             <div className="flex flex-col  ml-2 w-full gap-2">
+             <div className="flex flex-col  w-full gap-2">
              <div className="relative">
             <input
               type="text"
@@ -429,7 +429,12 @@ const handleDiscard = () => {
                 </button>
               )}
             
-            
+            {(isLoading && currentStep !== 3) && (
+                
+                <button className="next-btn w-32 " onClick={handleNext}>
+                  Next
+                </button>
+              )}
             </div>
           </div>
         </div>
